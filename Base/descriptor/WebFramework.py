@@ -104,3 +104,36 @@ if __name__ == '__main__':
     print type(ps).__dict__['get_version']
     print type(ps).__dict__['get_version'].__get__(ps, type(ps))
     print type(ps).__dict__['get_version'].__get__(ps, type(ps)) == ps.get_version
+
+    # example 8
+    print('\n' + 'example 8'.center(50, '='))
+    print ps.find_version
+    print ps.find_version()
+    print vars(ps)
+    print type(ps).__dict__['find_version']
+    print type(ps).__dict__['find_version'].__get__(ps, type(ps))
+    print type(ps).__dict__['find_version'].__get__(ps, type(ps)) == ps.find_version
+    print PythonSite.find_version()
+    print PythonSite.find_version
+    print type(ps).__dict__['find_version'].__get__(None, type(ps))
+    print type(ps).__dict__['find_version'].__get__(None, type(ps)) == PythonSite.find_version
+
+    # example 9
+    print('\n' + 'example 9'.center(50, '='))
+    print ps.get_site
+    print ps.get_site()
+    print type(ps).__dict__['get_site']
+    print type(ps).__dict__['get_site'].__get__(ps, type(ps))
+    print type(ps).__dict__['get_site'].__get__(ps, type(ps)) == ps.get_site
+    print PythonSite.get_site  # unbound method
+    try:
+        PythonSite.get_site()
+    except TypeError as e:
+        print 'Error: ' + str(e)
+    print PythonSite.get_site(ps)
+    print PythonSite.__dict__['get_site']
+    print PythonSite.__dict__['get_site'].__get__(None, PythonSite)
+    print PythonSite.__dict__['get_site'].__get__(None, PythonSite) == PythonSite.get_site
+    print PythonSite.__dict__['get_site'].__get__(ps, PythonSite)
+    print PythonSite.__dict__['get_site'].__get__(ps, PythonSite)()
+    # Unable to call object method with class, unless bound a object method manual
