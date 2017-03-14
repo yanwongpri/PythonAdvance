@@ -5,10 +5,10 @@
 import os
 from argparse import ArgumentParser
 
-
 # default arguments
 PATH = os.getcwdu()
 OUTPUT = os.getcwdu() + '/output.mp4'
+
 
 def build_parser():
     parser = ArgumentParser()
@@ -16,12 +16,35 @@ def build_parser():
     parser.add_argument('--output', dest='output', default=OUTPUT,  help='output file name')
     return parser
 
-def build_cmd(content, path, output):
+
+def build_cmd(filename_list, path, output):
     cmd = 'ffmpeg -i \"concat:'
-    for i in xrange(1, len(content)+1):
-        cmd += path + '/%i.ts|' % i
+    for filename in filename_list:
+        cmd += path + '/' + filename + '|'
     cmd += '\" -acodec copy -vcodec copy -absf aac_adtstoasc %s' % output
     return cmd
+
+
+def is_int(str):
+    str_is_in = True
+    try:
+        int(str)
+    except ValueError:
+        str_is_in = False
+    return str_is_in
+
+
+def filter_filename_by_int(filename_list):
+    new_filenames_no = []
+    new_filenames = []
+    for filename in filename_list:
+        if filename[-3:] == '.ts':
+            if is_int(filename[:-3]):
+                new_filenames_no.append(int(filename[:-3]))
+    new_filenames_no.sort()
+    for sorted_filename in new_filenames_no:
+        new_filenames.append('%i.ts' % sorted_filename)
+    return new_filenames
 
 
 if __name__ == '__main__':
@@ -33,19 +56,11 @@ if __name__ == '__main__':
     if not os.path.isdir(options.path):
         parser.error('path: %s does not exist.' % options.path)
 
-    filenames = os.listdir(options.path)
-    filters = []
-    for fn in filenames:
-        if not fn[-3:] == '.ts':
-            filters.append(fn)
-    for f in filters:
-        filenames.remove(f)
+    filenames_raw = os.listdir(options.path)
+    filenames = filter_filename_by_int(filenames_raw)
 
     cmd = build_cmd(filenames, options.path, options.output)
 
     os.system(cmd)
-    # print options.path
-    # print options.output
-    #
-    # print 'cmd'.center(50, '=')
-    # print cmd
+
+    print '%s process succeed!' % options.output
