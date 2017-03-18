@@ -13,13 +13,13 @@ def obtain_info_of_data(symbol):
     response = requests.get('http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=' + str(symbol))
     # return format: var apidata={...};
     # filter the tag
-    content = str(response.text[13:-2])
+    content = str(response.text.encode('utf8')[13:-2])
     content_split = content.split(',')
     # obtain the info of data, curpage, pages, records
     curpage = content_split[-1].split(':')[-1]
     pages = content_split[-2].split(':')[-1]
     records = content_split[-3].split(':')[-1]
-    return {'curpage':curpage, 'pages':pages, 'records':records}
+    return {'curpage': curpage, 'pages': pages, 'records': records}
 
 
 
@@ -32,10 +32,9 @@ def obtain_data(symbol, dict_data_info):
 
     url = 'http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=%s&page=%s'
 
-    # TODO single parse
     for cp in range(int(pages), 0, -1):
         response = requests.get(url % (symbol, str(cp)))
-        content = str(response.text[13:-2])
+        content = response.text.encode('utf8')[13:-2]
         data = content.split(',')[0][10:-1]
         data_soup = bs4.BeautifulSoup(data, 'lxml')
         line_of_data = len(data_soup.select('table > tbody > tr'))
