@@ -23,7 +23,8 @@ def obtain_info_of_data(symbol):
 
 
 
-def obtain_data(symbol, dict_data_info):
+def obtain_data(symbol):
+    dict_data_info = obtain_info_of_data(symbol)
     cur_pages = int(dict_data_info['pages'])
     pages = dict_data_info['pages']
     records = dict_data_info['records']
@@ -42,8 +43,8 @@ def obtain_data(symbol, dict_data_info):
         for i in range(line_of_data, 0, -1):
             row_of_data = []
             date = data_soup.select('table > tbody > tr:nth-of-type(%i) > td:nth-of-type(1)' % i)[0].text
-            earning_per_10k = data_soup.select('table > tbody > tr:nth-of-type(%i) > td:nth-of-type(2)' % i)[0].text
-            annualized_return = data_soup.select('table > tbody > tr:nth-of-type(%i) > td:nth-of-type(3)' % i)[0].text
+            earning_per_10k = float(data_soup.select('table > tbody > tr:nth-of-type(%i) > td:nth-of-type(2)' % i)[0].text) / 10000.0
+            annualized_return = float(data_soup.select('table > tbody > tr:nth-of-type(%i) > td:nth-of-type(3)' % i)[0].text[:-1]) / 100.0
             row_of_data.append(date)
             row_of_data.append(earning_per_10k)
             row_of_data.append(annualized_return)
