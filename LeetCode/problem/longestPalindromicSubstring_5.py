@@ -62,6 +62,46 @@ class Solution(object):
                         if is_pal:
                             if len(sub_str) > len(ans):
                                 ans = sub_str
+        return ans
+
+
+    @staticmethod
+    def longestPalindrome_ce(s):
+        length = len(s)
+        maxlength = 0
+        start = 0
+
+        if length == 1:
+            return s
+
+        # odd
+        for i in range(0, length):
+            j = i - 1
+            k = i + 1
+            while j >= 0 and k < length and s[j] == s[k]:
+
+                if k-j+1 > maxlength:
+                    maxlength = k-j+1
+                    start = j
+                j -= 1
+                k += 1
+
+        # even
+        for i in range(length):
+            j = i
+            k = i + 1
+            while j >= 0 and k < length and s[j] == s[k]:
+                if k-j+1 > maxlength:
+                    maxlength = k-j+1
+                    start = j
+                j -= 1
+                k += 1
+
+        if maxlength > 0:
+            return s[start:start+maxlength]
+        elif maxlength == 0 and s[0] == s[-1]:
+            return s[0]
+        return None
 
 
     @staticmethod
